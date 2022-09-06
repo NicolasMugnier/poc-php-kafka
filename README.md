@@ -7,7 +7,7 @@
 [librdkafka](https://github.com/edenhill/librdkafka)
 
 ```bash
-apt install librdkafka-dev
+sudo apt install librdkafka-dev
 ```
 
 ### php extension
@@ -18,9 +18,12 @@ apt install librdkafka-dev
 sudo pecl install rdkafka
 ```
 
+Enable the extension by adding `extension=rdkafka.so` in `php.ini` file.
+
 ## Run
 
 ```bash
 docker-compose up -d
-php ./src/Main.php
+php ./src/Producer.php
+php ./src/Consumer.php
 ```
