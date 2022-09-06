@@ -24,6 +24,7 @@ Enable the extension by adding `extension=rdkafka.so` in `php.ini` file.
 
 ```bash
 docker-compose up -d
-php ./src/Producer.php
-php ./src/Consumer.php
+php ./src/BatchMessageProducer.php
+php ./src/BatchMessageConsumer.php
+php ./src/SingleMessageConsumer.php
 ```
