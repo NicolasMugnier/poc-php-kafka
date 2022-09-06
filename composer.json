@@ -1,0 +1,9 @@
+{
+    "name": "nicolas.mugnier/poc-php-kafka",
+    "autoload": {
+        "psr-4": {
+            "NicolasMugnier\\PocPhpKafka\\": "src/"
+        }
+    },
+    "require": {}
+}
