@@ -4,22 +4,16 @@ declare(strict_types=1);
 
 namespace NicolasMugnier\PocPhpKafka;
 
-class Consumer
+require(__DIR__ . '/../vendor/autoload.php');
+
+class SingleMessageConsumer
 {
-    public function consume(): void
+    public function consume(string $topicName, int $brokerId = 0): void
     {
-        $brokers = "127.0.0.1:9093";
-        $topic = "test";
-        $brokerId = 0;
-
-        $conf = new \RdKafka\Conf();
-        $conf->set('log_level', (string) LOG_DEBUG);
-        $conf->set('debug', 'all');
-
         // consumer
-        $consumer = new \RdKafka\Consumer($conf);
-        $consumer->addBrokers($brokers);
-        $topic = $consumer->newTopic($topic);
+        $consumer = new \RdKafka\Consumer(Configuration::getConf());
+        $consumer->addBrokers(Configuration::BROKERS);
+        $topic = $consumer->newTopic($topicName);
         $topic->consumeStart($brokerId, RD_KAFKA_OFFSET_BEGINNING);
 
         while (true) {
@@ -39,4 +33,4 @@ class Consumer
     }
 }
 
-(new Consumer())->consume();
+(new SingleMessageConsumer())->consume(Configuration::SINGLE_MESSAGE_TOPIC_NAME);
