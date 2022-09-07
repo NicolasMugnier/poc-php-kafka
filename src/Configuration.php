@@ -17,6 +17,7 @@ class Configuration
         $conf = new \RdKafka\Conf();
         //$conf->set('log_level', (string) LOG_DEBUG);
         //$conf->set('debug', 'all');
+        $conf->set('metadata.broker.list', self::BROKERS);
         // Main errors, like Kafka is not running
         $conf->setErrorCb(function ($kafka, $err, $reason) {
             printf("Kafka error: %s (reason: %s)\n", \rd_kafka_err2str($err), $reason);

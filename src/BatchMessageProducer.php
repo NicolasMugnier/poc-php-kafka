@@ -12,9 +12,10 @@ class BatchMessageProducer
 {
     public function sendMessage(string $topic, string $message): void
     {
+        $conf = Configuration::getConf();
         // producer
-        $producer = new \RdKafka\Producer(Configuration::getConf());
-        $producer->addBrokers(Configuration::BROKERS);
+        $producer = new \RdKafka\Producer($conf);
+        // $producer->addBrokers(Configuration::BROKERS);
         // if the topic doesn't exists it is created on the fly, awesome
         $topic = $producer->newTopic($topic);
         $headers = [
@@ -22,22 +23,26 @@ class BatchMessageProducer
             'X-Origin' => 'somewhere'
         ];
         $topic->producev(RD_KAFKA_PARTITION_UA, 0, $message, null, $headers);
-        // retries in case off failure, for example when topic must be created the first time
-        for ($i = 0; $i <= 10; $i++) {
+
+        /**
+         * retries in case of failure, for example when topic must be created the first time
+         * can not be replaced by $conf->set('message.send.max.retries', '10');
+         */
+        $i = 0;
+        do {
             $result = $producer->flush(1000);
-            if (RD_KAFKA_RESP_ERR_NO_ERROR === $result) {
-                break;
-            }
-        }
+        } while (RD_KAFKA_RESP_ERR_NO_ERROR !== $result || $i++ <= 10);
+
         // all retries failed
         if (RD_KAFKA_RESP_ERR_NO_ERROR !== $result) {
+            // TODO : log message
             throw new \RuntimeException('Was unable to flush, messages might be lost!');
         }
     }
 }
 
 $message = [];
-for ($i = 0; $i < 100; $i++) {
+for ($i = 0; $i <= 100; $i++) {
     $item = new \StdClass();
     $item->uuid = Uuid::v4()->toRfc4122();
     $message[] = $item;

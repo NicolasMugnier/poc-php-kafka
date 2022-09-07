@@ -12,7 +12,7 @@ class SingleMessageConsumer
     {
         // consumer
         $consumer = new \RdKafka\Consumer(Configuration::getConf());
-        $consumer->addBrokers(Configuration::BROKERS);
+        // $consumer->addBrokers(Configuration::BROKERS);
         $topic = $consumer->newTopic($topicName);
         $topic->consumeStart($brokerId, RD_KAFKA_OFFSET_BEGINNING);
 
@@ -27,7 +27,7 @@ class SingleMessageConsumer
                 echo $msg->errstr(), "\n";
                 break;
             } else {
-                echo '[headers] ' . $msg->headers . ' [payload] ' . $msg->payload, "\n";
+                echo '[headers] ' . json_encode($msg->headers) . ' [payload] ' . $msg->payload, "\n";
             }
         }
     }
