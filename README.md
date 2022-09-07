@@ -20,6 +20,12 @@ sudo pecl install rdkafka
 
 Enable the extension by adding `extension=rdkafka.so` in `php.ini` file.
 
+## Dependencies
+
+```bash
+composer install
+```
+
 ## Run
 
 ```bash
