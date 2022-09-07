@@ -15,14 +15,24 @@ class BatchMessageProducer
         // producer
         $producer = new \RdKafka\Producer(Configuration::getConf());
         $producer->addBrokers(Configuration::BROKERS);
+        // if the topic doesn't exists it is created on the fly, awesome
         $topic = $producer->newTopic($topic);
-        // $topic->produce(RD_KAFKA_PARTITION_UA, 0, $message);
         $headers = [
             'X-Correlation-ID' => Uuid::v4()->toRfc4122(),
             'X-Origin' => 'somewhere'
         ];
         $topic->producev(RD_KAFKA_PARTITION_UA, 0, $message, null, $headers);
-        $producer->flush(1000);
+        // retries in case off failure, for example when topic must be created the first time
+        for ($i = 0; $i <= 10; $i++) {
+            $result = $producer->flush(1000);
+            if (RD_KAFKA_RESP_ERR_NO_ERROR === $result) {
+                break;
+            }
+        }
+        // all retries failed
+        if (RD_KAFKA_RESP_ERR_NO_ERROR !== $result) {
+            throw new \RuntimeException('Was unable to flush, messages might be lost!');
+        }
     }
 }
 

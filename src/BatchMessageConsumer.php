@@ -6,6 +6,7 @@ namespace NicolasMugnier\PocPhpKafka;
 
 require(__DIR__ . '/../vendor/autoload.php');
 
+// @todo add consumer group
 class BatchMessageConsumer
 {
     public function consume(string $topicName, int $brokerId = 0): void
@@ -34,7 +35,7 @@ class BatchMessageConsumer
                 $producerTopic = $producer->newTopic(Configuration::SINGLE_MESSAGE_TOPIC_NAME);
 
                 foreach ($rows as $row) {
-                    $producerTopic->producev(RD_KAFKA_PARTITION_UA, 0, json_encode($row), null, $headers);
+                    $producerTopic->producev(124, 0, json_encode($row), null, $headers);
                 }
                 $producer->flush(1000);
             }
