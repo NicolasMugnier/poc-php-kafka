@@ -27,7 +27,7 @@ class SingleMessageConsumer
                 echo $msg->errstr(), "\n";
                 break;
             } else {
-                echo $msg->payload, "\n";
+                echo '[headers] ' . $msg->headers . ' [payload] ' . $msg->payload, "\n";
             }
         }
     }
